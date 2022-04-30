@@ -1,0 +1,74 @@
+*pre layout simulation
+
+*/modelfile_65nm
+.lib /modelfile_65nm/minNminP.cir	
+*.include /modelfile_65nm/typNtypP.cir
+*.include /modelfile_65nm/maxNmaxP.cir
+*.include /modelfile_65nm/maxNminP.cir
+
+.temp=125
+
+.include OAI_sch2.src.net
+
+
+X1 A B C D E F clk gnd out vdd OAI_sch2
+*X1 A B C clk gnd out vdd OAI_NC
+.option eps=1e-9
+
+*initialisation of different paramters
+.param SUPPLY=1.32
+.param delay=0p
+.param slope=20p
+.param sweep=150n
+.param period=300n
+	
+.param tend = 100n	
+*end time of simulation
+.tran 1p 500n
+C out gnd 25f
+*Port Instantiation or giving stimulii
+vd vdd 0 SUPPLY
+vg gnd 0 0
+*V1 clk gnd 0
+V1 clk gnd PULSE (0 SUPPLY 'sweep/32' slope slope 'sweep/32' 'period/32')
+*V1 clk gnd PULSE (0 SUPPLY 0 slope slope 50n 100n)
+V2 A gnd PULSE (0 SUPPLY delay slope slope sweep period)
+V3 B gnd PULSE (0 SUPPLY delay slope slope 'sweep/2' 'period/2')
+V4 C gnd PULSE (0 SUPPLY delay slope slope 'sweep/4' 'period/4')
+V5 D gnd PULSE (0 SUPPLY delay slope slope 'sweep/8' 'period/8')
+V6 E gnd PULSE (0 SUPPLY delay slope slope 'sweep/16' 'period/16')
+V7 F gnd PULSE (0 SUPPLY delay slope slope 'sweep/32' 'period/32')
+*operating freq=1/20n
+*V1 in gnd DC 0 for calculation of static power
+
+*Probe instantiation or outputs we want to see
+.probe v(*) v(X1.*)
+.probe i(*)
+
+.measure tran tplh
++ TRIG v(E) VAL='SUPPLY/2' FALL=3
++TARG v(out) VAL='SUPPLY/2' RISE=4
+
+.measure tran tphl
++ TRIG v(F) VAL='SUPPLY/2' RISE=2
++ TARG v(out) VAL='SUPPLY/2' RISE=1
+
+.measure trise
++ TRIG v(out) VAL='0.2*SUPPLY' RISE=2
++ TARG v(out) VAL='0.8*SUPPLY' RISE=2
+
+.measure tfall
++ TRIG v(out) VAL='0.8*SUPPLY' FALL=2
++ TARG v(out) VAL='0.2*SUPPLY' FALL=2
+
+*.measure Static param = SUPPLY*I(VD)
+.extract label = pdyn (SUPPLY*integ(I(VD),30N,30.33N))
+*integration of I of Vdd from 30 to 30.33 will give us the charge
+* and that multiplied by supply will give us the energy (power per mega hertz)
+*total dynamic power= energy multiplied by the operating frequency
+
+
+* Worst Case ^^
+*transient simulation
+
+.end
