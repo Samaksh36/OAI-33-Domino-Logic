@@ -5,6 +5,9 @@
 ### Semester: Monsoon 2021
 ### Abstract: Schematic and Layout implementation of a complex gate, followed by PPA analysis.
 
+<br />
+--------------------------------------------------------------------------------------------
+<br />
 
 Tools: Cadence Virtuoso, Eldo, X-Circuit, WaveDrom <br /> 
 <br />
