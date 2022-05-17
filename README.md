@@ -1,5 +1,5 @@
 # OAI-33-Domino-Logic
-### Institute: Indraprastha Institute of Information Technology, Delhi
+### Institute: Indraprastha Institute of Information Technology, Delhi (IIITD)
 ### Instructor: Dr Anuj Grover
 ### Course: Digital VLSI Design
 ### Semester: Monsoon 2021
